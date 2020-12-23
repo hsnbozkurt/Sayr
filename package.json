@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/SadMap/Sayr/issues"
   },
-  "homepage": "https://github.com/SadMap/Sayr#readme"
+  "homepage": "https://github.com/SadMap/Sayr#readme",
+  "dependencies": {
+    "@keyv/sqlite": "^2.0.2",
+    "discord.js": "^12.5.1",
+    "keyv": "^4.0.3"
+  }
 }
