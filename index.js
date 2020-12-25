@@ -51,7 +51,7 @@ client.on('message', async message => {
 					}
 					puan.puan = puan.puan + 1;
 					await db.set(`Puanlar.${message.guild.id}`, Puanlar);
-					await db.set(`Sayı.${message.guild.id}`, Sayı + 1);
+					await db.set(`Sayı.${message.guild.id}`, Sayı + atlama);
 					let nick = '';
 					if (message.member.nickname) {nick = message.member.nickname;}
 					else {nick = message.author.username;}
