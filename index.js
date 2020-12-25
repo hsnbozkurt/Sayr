@@ -10,6 +10,7 @@ client.on('ready', () => {
 client.on('guildCreate', async guildo => {
 	db.set(`prefix.${guildo.id}`, '*');
 	db.set(`Puanlar.${guildo.id}`, []);
+	db.set(`Atlama.${guildo.id}`, 1);
 	client.user.setActivity(`${client.guilds.cache.size} Sunucudaki ${client.users.cache.size} Oyuncuyu`, { type: 'WATCHING' });
 });
 client.on('message', async message => {
@@ -30,7 +31,12 @@ client.on('message', async message => {
 				});
 			}
 			else if (sonkisi !== message.author.id) {
-				if (message.content == Sayı + 1) {
+				let atlama = await db.get(`Atlama.${message.guild.id}`);
+				if (!atlama) {
+					atlama = 1;
+					await db.set(`Atlama.${message.guild.id}`, atlama);
+				}
+				if (message.content == Sayı + atlama) {
 					await db.set(`Sonkisi.${message.guild.id}`, message.author.id);
 					let Puanlar = await db.get(`Puanlar.${message.guild.id}`);
 					if (!Puanlar) {Puanlar = [];}
@@ -87,6 +93,43 @@ client.on('message', async message => {
 
 	// get the first space-delimited argument after the prefix as the command
 	const command = args.shift().toLowerCase();
+	if (command == 'ayarlar') {
+		if (!message.member.hasPermission('MANAGE_GUILD')) {return message.reply('Bu Menüye Erişemezsin');}
+		else if (args[0].toLowerCase() == 'atlama') {
+			if (!args[1]) {
+				const atlama = await db.get(`Atlama.${message.guild.id}`);
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.guild.name} Atlama Ayarı Açıklaması`, message.guild.iconURL({ dynamic:true }))
+					.setFooter(`${message.author.username} Tarafından İstendi`, message.author.displayAvatarURL({ dynamic:true }))
+					.setTimestamp(Date.now())
+					.setDescription(`Atlama Oyun Sırasında Atlanacak Sayıyı Belirler \n Şuanda Atlanan Sayı ${atlama} \n ⚠️ Uyarı Sayı Değiştirildiğinde Oyun Yeniden Başlar`)
+					.setColor('RANDOM');
+				message.channel.send(embed);
+			}
+			else if (isNaN(args[1])) {
+				const atlama = await db.get(`Atlama.${message.guild.id}`);
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.guild.name} Atlama Ayarı Açıklaması`, message.guild.iconURL({ dynamic:true }))
+					.setFooter(`${message.author.username} Tarafından İstendi`, message.author.displayAvatarURL({ dynamic:true }))
+					.setTimestamp(Date.now())
+					.setDescription(`Atlama Oyun Sırasında Atlanacak Sayıyı Belirler \n Şuanda Atlanan Sayı ${atlama} \n ⚠️ Uyarı Sayı Değiştirildiğinde Oyun Yeniden Başlar
+⚠️ Bu Bir Bug Değil Geçersiz Sayı Girdiğin İçin Bu Mesajı Aldın`)
+					.setColor('RANDOM');
+				message.channel.send(embed);
+			}
+			else if (!isNaN(args[1])) {
+				await db.set(`Atlama.${message.guild.id}`, Number(args[1]));
+				await db.set(`Sayı.${message.guild.id}`, 0);
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.guild.name} Ayarlar`, message.guild.iconURL({ dynamic:true }))
+					.setFooter(`${message.author.username} Tarafından İstendi`, message.author.displayAvatarURL({ dynamic:true }))
+					.setTimestamp(Date.now())
+					.setDescription(`✅ Atlanacak Sayı ${args[1]} Olarak Değiştirildi`)
+					.setColor('RANDOM');
+				message.channel.send(embed);
+			}
+		}
+	}
 	if (command == 'prefix') {
 		if (message.member.hasPermission('MANAGE_GUILD')) {
 			if (args.length) {
