@@ -25,7 +25,7 @@ client.on('message', async message => {
 			}
 			else if (sonkisi == message.author.id) {
 				message.delete();
-				message.channel.send('Arka Arkaya Yazamazsın').then(m2 => {
+				message.channel.send('Üst Üste Yazamazsın').then(m2 => {
 					const ms = '20000';
 					m2.delete({ timeout: ms });
 				});
@@ -144,7 +144,7 @@ client.on('message', async message => {
 			if (message.member.hasPermission('MANAGE_CHANNELS')) {
 				await db.set(`Okanal.${message.guild.id}`, message.mentions.channels.first().id);
 				await db.set(`Sayı.${message.guild.id}`, 0);
-				message.mentions.channels.first().send('Oyun Başladı iyi Oyunlar');
+				message.mentions.channels.first().send('Oyun Başladı! İyi Oyunlar');
 			}
 			else {return message.channel.send('🚫 Üzgünüm Ama Oyunu Başlatmak İçin Kanalları Yönet Yetkin Olması Lazıms');}
 		}
